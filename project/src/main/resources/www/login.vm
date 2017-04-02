@@ -154,8 +154,8 @@ $('.login-form button').click(function(event) {
        success: function(data, success) {
            if(data["status"] == "OK") {
                $(".response").removeClass("error").addClass("good").show();
-               $(".response").html("Bine ai venit" + user + "!");
-               window.location.replace("/area");
+               $(".response").html("Bine ai venit <b>" + user + "</b>!");
+               window.location.replace("/dash");
            } else if(data["status"] == "ERROR") {
                $(".response").removeClass("good").addClass("error").show();
                $(".response").text("A aparut o eroare la autentificare!");

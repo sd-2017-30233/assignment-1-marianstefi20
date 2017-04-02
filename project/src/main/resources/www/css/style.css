@@ -1,0 +1,40 @@
+ body {
+        padding-top: 70px;
+        /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
+    }
+
+ul.crud {
+	text-decoration: none;
+	font-size:18px;
+	margin:0;
+	padding: 0;
+}
+
+ul.crud li {
+	display:inline-block;
+	margin-left:10px;
+	text-shadow: 1 0 2px #ccc;
+}
+
+ul.crud li:first-child {
+	margin-left: 0px;
+}
+
+ul.crud li a.eye {
+}
+ul.crud li a.edit {
+	color: green;
+}
+ul.crud li a.delete {
+	color: red;
+}
+
+.response {
+    margin: 10px 0 0 0;
+    padding: 10px;
+    color: #fff;
+    font-size: 14px;
+    display:none;
+ }
+ .good {background: #164818; }
+ .error {background:#8e1d1d;}

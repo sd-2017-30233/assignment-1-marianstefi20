@@ -11,7 +11,7 @@ public class LoginController {
         return UserGateway.ifuserexists(username, password);
     }
 
-    public static boolean checkLogin(String username, String password) {
+    public static boolean checkLoginCredentials(String username, String password) {
         // make hashed passwords
         //...
         //check if the user exists

@@ -1,5 +1,5 @@
 import presentation.Filters;
-import presentation.GetPages;
+import presentation.Router;
 
 import static spark.Spark.*;
 
@@ -10,8 +10,9 @@ public class Main {
         // Set up before-filters (called before each get/post)
 
         // Set up routes
-        GetPages getPages = new GetPages();
-        getPages.getLogin();
+        Router.setStatic(); // sets the static folder
+        Router.getPages(); // gets all the pages
+        Router.postPages(); // handles post request from the pages
 
         //Set up after-filters (called after each get/post)
         after("*", Filters.addGzipHeader);
