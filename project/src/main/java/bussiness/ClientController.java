@@ -17,7 +17,72 @@ import java.util.Arrays;
  * Created by maria on 3/30/2017.
  */
 public class ClientController {
+    private int id;
+    private String name;
+    private long cnp;
+    private String adress;
+    private ClientGateway clientGateway = new ClientGateway();
 
+    // A constructor that usually handles inserts
+    public ClientController(String name, Long cnp, String adress) {
+        this.name = name;
+        this.cnp = cnp;
+        this.adress = adress;
+    }
+
+    // A constructor that usually handles an existing client
+    public ClientController(int clientID) {
+        this.id = clientID;
+        this.name = clientGateway.selectName(id);
+        this.cnp = clientGateway.selectCNP(id);
+        this.adress = clientGateway.selectAdress(id);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public long getCnp() {
+        return cnp;
+    }
+
+    public void setCnp(long cnp) {
+        this.cnp = cnp;
+    }
+
+    public String getAdress() {
+        return adress;
+    }
+
+    public void setAdress(String adress) {
+        this.adress = adress;
+    }
+
+    public void insert(ClientController client) {
+        String name = client.name;
+        Long cnp = client.cnp;
+        String adress = client.adress;
+        clientGateway.insert(name, cnp, adress);
+    }
+
+    public boolean update() {
+        return clientGateway.update(id, name, cnp, adress);
+    }
+
+    public void delete() {
+        clientGateway.delete(id);
+    }
+
+    public ArrayList<ArrayList<String>> getTransactionsAsTable() {
+        ResultSet rs = clientGateway.selectTransactions(id);
+        return DataMapper.getAllasTable(rs);
+    }
+
+    // General methods that are not specific to a single client
     public static JSONArray getAllAsJSON() {
         ResultSet all = ClientGateway.selectAllInfo();
         try {
@@ -33,24 +98,4 @@ public class ClientController {
         return DataMapper.getAllasTable(rs);
     }
 
-    public static ArrayList<ArrayList<String>> getTransactionsAsTable(int clientID) {
-        ResultSet rs = ClientGateway.selectTransactions(clientID);
-        return DataMapper.getAllasTable(rs);
-    }
-
-    public static String getName(int clientID) {
-        return ClientGateway.selectName(clientID);
-    }
-
-    public static String getCNP(int clientID) {
-        return ClientGateway.selectCNP(clientID);
-    }
-
-    public static String getAdress(int clientID) {
-        return ClientGateway.selectAdress(clientID);
-    }
-
-    public static boolean edit(int id, String name, Long cnp, String adress) {
-        return ClientGateway.edit(id, name, cnp, adress);
-    }
 }

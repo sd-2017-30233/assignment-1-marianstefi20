@@ -6,13 +6,14 @@ import datasource.UserGateway;
  * Created by maria on 3/30/2017.
  */
 public class LoginController {
+    private UserGateway userGateway = new UserGateway();
 
-    private static boolean userExists(String username, String password) {
-        return UserGateway.ifuserexists(username, password);
+    private boolean userExists(String username, String password) {
+        return userGateway.ifuserexists(username, password);
     }
 
-    public static boolean checkLoginCredentials(String username, String password) {
-        // make hashed passwords
+    public boolean checkLoginCredentials(String username, String password) {
+        // call the hash passwords
         //...
         //check if the user exists
         if(userExists(username, password)) {

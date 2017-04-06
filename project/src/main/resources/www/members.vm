@@ -76,8 +76,8 @@
             <div>
                 <!-- Nav tabs -->
                 <ul class="nav nav-tabs" role="tablist">
-                    <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Home</a></li>
-                    <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Profile</a></li>
+                    <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">View clients</a></li>
+                    <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Your Profile</a></li>
                     #if($admin==1) 
                     <li role="presentation"><a href="#users" aria-controls="users" role="tab" data-toggle="tab">Users</a></li>
                     #end
@@ -86,7 +86,8 @@
                 <!-- Tab panes -->
                 <div class="tab-content">
                     <div role="tabpanel" class="tab-pane active" id="home">
-                        Edit customer info
+                        <h4 style="margin-top:0px">View clients</h4>
+                        <p>Here you can manage all the clients of the bank, edit their personal information (OMG) and view their transactions</p>
                         <table class="table table-bordered table-striped">
                             <thead>
                                 <tr>
@@ -114,6 +115,7 @@
                         </table>
                     </div>
                     <div role="tabpanel" class="tab-pane" id="profile">
+                        <h4 style="margin-top:0px">Your profile</h4>
                         <div class="row">
                             <div class="col-lg-6">
                                 <form class="edit-employee">
@@ -137,6 +139,7 @@
                     </div>
                     #if($admin == 1) 
                     <div role="tabpanel" class="tab-pane" id="users">
+                    <h4 style="margin-top:0px">Edit users</h4>
                         <div class="row">
                             <div class="col-lg-4">
                                 <table class="table table-bordered table-striped">
@@ -155,7 +158,8 @@
                                         #end
                                         <td>
                                             <ul class="crud">
-                                                <li><a href="/actions/employee/$employee[0]" class="eye" title="Actions"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></li>
+                                                <li><a href="/report/$employee[0]" class="report" title="Report"><span class="glyphicon glyphicon-file" aria-hidden="true"></span></a></li>
+                                                <li><a href="/view/employee/$employee[0]" class="eye" title="Actions"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></li>
                                                 <li><a href="/edit/employee/$employee[0]" class="edit" title="Edit"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></li>
                                                 <li><a href="/delete/employee/$employee[0]" class="delete" title="Remove employee"><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span></a></li>
                                             </ul>

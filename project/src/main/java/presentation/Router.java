@@ -28,6 +28,8 @@ import static spark.Spark.*;
 public class Router {
     // Not used - implements basic finder with getTagValues
     private static final Pattern TAG_REGEX = Pattern.compile("<<(.+?)>>");
+    private LoginController loginController = new LoginController();
+    private static UserController userController;
 
     private static List<String> getTagValues(final String str) {
         final List<String> tagValues = new ArrayList<String>();
@@ -64,17 +66,17 @@ public class Router {
         }
     }
 
-    private static void logout(Request request) {
+    private void logout(Request request) {
         request.session().removeAttribute("loggedIn");
         request.session().removeAttribute("employeeID");
     }
 
-    private static void login(Request request, String username, String password) {
+    private void login(Request request, String username, String password) {
         request.session().attribute("loggedIn", true);
-        request.session().attribute("employeeID", UserController.getID(username, password));
+        request.session().attribute("employeeID", userController.getId());
     }
 
-    public static void getPages() {
+    public void getPages() {
         get("/login", (request, response) -> {
             Map<String, Object> model = new HashMap<>();
             return new ModelAndView(model, "/www/login.vm");
@@ -82,7 +84,7 @@ public class Router {
 
         get("/logout", (request, response) -> {
             Map<String, Object> model = new HashMap<>();
-            Router.logout(request);
+            this.logout(request);
             response.redirect("/login");
             return null;
         }, new VelocityTemplateEngine());
@@ -93,11 +95,11 @@ public class Router {
             int id = request.session().attribute("employeeID");
             int admin = request.session().attribute("admin");
             model.put("getAllClients", ClientController.getAllClientsAsTable());
-            model.put("getAllEmployees", UserController.getAllEmployeesAsTable());
+            model.put("getAllEmployees", userController.getAllEmployeesAsTable());
             model.put("admin", admin);
-            model.put("employeeName", UserController.getName(id));
-            model.put("employeeUsername", UserController.getUsername(id));
-            model.put("employeePassword", UserController.getPassword(id));
+            model.put("employeeName", userController.getName());
+            model.put("employeeUsername", userController.getUsername());
+            model.put("employeePassword", userController.getPassword());
             return new ModelAndView(model, "/www/members.vm");
         }, new VelocityTemplateEngine());
 
@@ -106,41 +108,44 @@ public class Router {
             String type = request.splat()[0];
             int id = Integer.parseInt(request.splat()[1]);
             Map<String, Object> model = new HashMap<>();
-            model.put("clientName", ClientController.getName(id));
-            model.put("transactions", ClientController.getTransactionsAsTable(id));
+            ClientController client = new ClientController(id);
+            model.put("clientName", client.getName());
+            model.put("transactions", client.getTransactionsAsTable());
             return new ModelAndView(model, "/www/transactions.vm");
         }, new VelocityTemplateEngine());
 
         get("/edit/*", (request, response) -> {
             Router.checkLoginStatus(request, response);
             int id = Integer.parseInt(request.splat()[0]);
+            ClientController client = new ClientController(id);
             Map<String, Object> model = new HashMap<>();
             model.put("clientID", id);
-            model.put("clientName", ClientController.getName(id));
-            model.put("clientCNP", ClientController.getCNP(id));
-            model.put("clientAdress", ClientController.getAdress(id));
+            model.put("clientName", client.getName());
+            model.put("clientCNP", client.getCnp());
+            model.put("clientAdress", client.getAdress());
             return new ModelAndView(model, "/www/edit.vm");
         }, new VelocityTemplateEngine());
 
     }
 
-    private static void checkAdmin(String username, String password, Request request) {
-        int role = UserController.getRole(username,password);
+    private void checkAdmin(Request request) {
+        int role = userController.getRole();
         if(role == 1) {
             request.session().attribute("admin", 1);
         } else request.session().attribute("admin", 0);
     }
 
-    public static void postPages() {
+    public void postPages() {
         post("/login", (request, response) -> {
             String body = request.body();
             JSONObject obj = new JSONObject(body);
             String username = obj.getString("username");
             String password = obj.getString("password");
             // check the connection via the bussiness layer and send back if ok
-            if(LoginController.checkLoginCredentials(username, password)) {
-                Router.checkAdmin(username, password, request);
-                Router.login(request, username, password);
+            if(loginController.checkLoginCredentials(username, password)) {
+                userController = new UserController(username, password);
+                this.checkAdmin(request);
+                this.login(request, username, password);
                 return Message.OK;
             } else {
                 return Message.ERROR;
@@ -154,12 +159,12 @@ public class Router {
             String name = obj.getString("name");
             Long cnp = Long.parseLong(obj.getString("cnp"));
             String adress = obj.getString("adress");
-            if(ClientController.edit(id,name,cnp,adress)) {
-                return Message.OK;
-            } else return Message.ERROR;
+            ClientController client = new ClientController(id);
+            client.setName(name);
+            client.setCnp(cnp);
+            client.setAdress(adress);
+            return (client.update()) ? Message.OK : Message.ERROR;
         });
-
-
     }
 
 }

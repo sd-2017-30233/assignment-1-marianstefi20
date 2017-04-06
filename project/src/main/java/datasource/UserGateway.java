@@ -10,11 +10,8 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class UserGateway {
-    private String name = null;
-    private String role = null;
 
-
-    public static ResultSet selectAllInfo() {
+    public ResultSet selectAllInfo() {
         try {
             Connection conn = DBConn.getInstance().getConnection();
             String sql = "SELECT id,name,role FROM users";
@@ -29,7 +26,7 @@ public class UserGateway {
 
 
     // check if username and password exists - available only to users - employees or administrators
-    public static boolean ifuserexists(String username, String password) {
+    public boolean ifuserexists(String username, String password) {
         try {
             Connection conn = DBConn.getInstance().getConnection();
             String sql = "SELECT username, password FROM users WHERE username = ? AND password = ?";
@@ -44,7 +41,7 @@ public class UserGateway {
         }
     }
 
-    public static int selectID(String username, String password) {
+    public int selectID(String username, String password) {
         try {
             Connection conn = DBConn.getInstance().getConnection();
             String sql = "SELECT id FROM users WHERE username = ? AND password = ?";
@@ -60,13 +57,12 @@ public class UserGateway {
         }
     }
 
-    public static int selectRole(String username, String password) {
+    public int selectRole(int id) {
         try {
             Connection conn = DBConn.getInstance().getConnection();
-            String sql = "SELECT role FROM users WHERE username = ? AND password = ?";
+            String sql = "SELECT role FROM users WHERE id = ?";
             PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setString(1, username);
-            stmt.setString(2, password);
+            stmt.setInt(1,id);
             ResultSet res = stmt.executeQuery();
             res.next();
             return res.getInt(1);
@@ -76,7 +72,7 @@ public class UserGateway {
         }
     }
 
-    public static String selectName(int id) {
+    public String selectName(int id) {
         try {
             Connection conn = DBConn.getInstance().getConnection();
             String sql = "SELECT name FROM users WHERE id = ?";
@@ -91,7 +87,7 @@ public class UserGateway {
         }
     }
 
-    public static String selectUsername(int id) {
+    public String selectUsername(int id) {
         try {
             Connection conn = DBConn.getInstance().getConnection();
             String sql = "SELECT username FROM users WHERE id = ?";
@@ -106,7 +102,7 @@ public class UserGateway {
         }
     }
 
-    public static String selectPassword(int id) {
+    public String selectPassword(int id) {
         try {
             Connection conn = DBConn.getInstance().getConnection();
             String sql = "SELECT password FROM users WHERE id = ?";
@@ -118,6 +114,55 @@ public class UserGateway {
         } catch(SQLException e) {
             System.err.println(e);
             return null;
+        }
+    }
+
+    public boolean insert(String name, int role, String username, String password) {
+        try {
+            Connection conn = DBConn.getInstance().getConnection();
+            String sql = "INSERT INTO users VALUES(?,?,?,?)";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, name);
+            stmt.setInt(2, role);
+            stmt.setString(3, username);
+            stmt.setString(4, password);
+            stmt.executeQuery();
+            return true;
+        } catch(SQLException e) {
+            System.err.println("Eroare in metoda edit() din clientGateway " + e);
+            return false;
+        }
+    }
+
+    public boolean update(int id, String name, int role, String username, String password) {
+        try {
+            Connection conn = DBConn.getInstance().getConnection();
+            String sql = "UPDATE users SET name = ?, role = ?, username = ?, password = ? WHERE id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, name);
+            stmt.setInt(2, role);
+            stmt.setString(3, username);
+            stmt.setString(4, password);
+            stmt.setInt(5, id);
+            stmt.executeUpdate();
+            return true;
+        } catch(SQLException e) {
+            System.err.println("Eroare in metoda edit() din clientGateway " + e);
+            return false;
+        }
+    }
+
+    public boolean delete(int id) {
+        try {
+            Connection conn = DBConn.getInstance().getConnection();
+            String sql = "DELETE FROM users WHERE id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, id);
+            stmt.executeQuery();
+            return true;
+        } catch(SQLException e) {
+            System.err.println("Eroare in metoda edit() din clientGateway " + e);
+            return false;
         }
     }
 }

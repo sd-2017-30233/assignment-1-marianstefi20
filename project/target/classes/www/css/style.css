@@ -20,8 +20,10 @@ ul.crud li:first-child {
 	margin-left: 0px;
 }
 
-ul.crud li a.eye {
+ul.crud li a.report {
+    color: #234222;
 }
+ul.crud li a.eye {}
 ul.crud li a.edit {
 	color: green;
 }
